@@ -2,13 +2,29 @@
     "name": "pgl1",
     "displayName": "Protocol Definition Language (PGL1)",
     "description": "Syntax support for the Protocol Definition Language (PGL1) used by Protlr (see protlr.com)",
-    "version": "0.0.1",
+    "version": "0.0.2",
+    "icon": "images/icon.png",
+    "publisher": "protlr",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/protlr/vscode-language-pgl1.git"
+    },
+    "bugs": {
+        "url": "https://github.com/protlr/vscode-language-pgl1/issues"
+    },
+    "homepage": "https://github.com/protlr/vscode-language-pgl1",
+    "keywords": [
+        "Protlr",
+        "Protocol",
+        "Syntax"
+    ],
     "engines": {
         "vscode": "^1.44.0"
     },
     "categories": [
         "Programming Languages"
     ],
+    "license": "MIT",
     "contributes": {
         "languages": [
             {

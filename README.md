@@ -6,7 +6,7 @@ This extension provides support for the Protocol Definition Language (PGL) used 
 
 * Syntax Highlighting
 
-![Screenshot](screenshots/sample.png)
+![Screenshot](images/sample-screenshot.png)
 
 ## Contributing
 
