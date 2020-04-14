@@ -1,0 +1,959 @@
+{
+  "name": "Protocol Definition Language (PGL)",
+  "scopeName": "source.pgl1",
+  "fileTypes": [
+    ".pgl",
+    ".pgl1"
+  ],
+  "foldingStartMarker": "(?x)\n/\\*\\*(?!\\*)\n|^(?![^{]*?//|[^{]*?/\\*(?!.*?\\*/.*?\\{)).*?\\{\\s*($|//|/\\*(?!.*?\\*/.*\\S))\n",
+  "foldingStopMarker": "(?<!\\*)\\*\\*/|^\\s*\\}",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "match": "^\\s*(endianness-(?:be|le))\\s+(protocol)\\s+([_A-Za-z][_A-Za-z0-9]*)$",
+      "captures": {
+        "1": {
+          "name": "storage.modifier.endianness.pgl1"
+        },
+        "2": {
+          "name": "storage.type.protocol.pgl1"
+        },
+        "3": {
+          "name": "entity.name.protocol.pgl1",
+          "patterns": [
+            {
+              "include": "#reservedWords"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "begin": "^\\s*(import)\\b",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.other.import.pgl1"
+        }
+      },
+      "end": "$",
+      "name": "meta.import.pgl1",
+      "patterns": [
+        {
+          "include": "#string"
+        }
+      ]
+    },
+    {
+      "begin": "^\\s*(codecs)",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.codecs.pgl1"
+        }
+      },
+      "end": "(?<=\\})",
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "begin": "\\{",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.section.block.begin.bracket.curly.codecs.pgl1"
+            }
+          },
+          "end": "\\}",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.block.end.bracket.curly.codecs.pgl1"
+            }
+          },
+          "name": "meta.block.codecs.pgl1",
+          "patterns": [
+            {
+              "include": "#comments"
+            },
+            {
+              "include": "#rawTypeCodec"
+            },
+            {
+              "include": "#typeTypeCodec"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "begin": "\\b(enum)\\s+([_A-Za-z][_A-Za-z0-9]*)\\b",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.type.enum.pgl1"
+        },
+        "2": {
+          "name": "entity.name.type.enum.pgl1",
+          "patterns": [
+            {
+              "include": "#reservedWords"
+            }
+          ]
+        }
+      },
+      "end": "(?<=\\})",
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "begin": "\\{",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.section.block.begin.bracket.curly.enum.pgl1"
+            }
+          },
+          "end": "\\}",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.block.end.bracket.curly.enum.pgl1"
+            }
+          },
+          "name": "meta.block.enum.pgl1",
+          "patterns": [
+            {
+              "include": "#comments"
+            },
+            {
+              "match": "\\b([_A-Za-z][_A-Za-z0-9]*)\\s*(?:(=)\\s*(?:([_A-Za-z][_A-Za-z0-9]*)|(0[xX][0-9a-fA-F]+[uU]?)|(?:([-]?)(\\d+))))?",
+              "captures": {
+                "1": {
+                  "name": "variable.other.enummember.pgl1",
+                  "patterns": [
+                    {
+                      "include": "#reservedWords"
+                    }
+                  ]
+                },
+                "2": {
+                  "name": "keyword.operator.assignment.pgl1"
+                },
+                "3": {
+                  "name": "variable.other.enummember.pgl1"
+                },
+                "4": {
+                  "name": "constant.numeric.hexadecimal.pgl1"
+                },
+                "5": {
+                  "name": "keyword.operator.pgl1"
+                },
+                "6": {
+                  "name": "constant.numeric.decimal.pgl1"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "match": "^\\s*(@entry)\\b",
+      "captures": {
+        "1": {
+          "name": "entity.other.attribute.entry.pgl1"
+        }
+      }
+    },
+    {
+      "begin": "^\\s*(@use)\\s+([_A-Za-z][_A-Za-z0-9]*)\\s*(<)",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.other.attribute.use.pgl1"
+        },
+        "2": {
+          "name": "entity.name.type.pgl1",
+          "patterns": [
+            {
+              "include": "#reservedWords"
+            }
+          ]
+        },
+        "3": {
+          "name": "punctuation.sections.angle-brackets.start.use.pgl1"
+        }
+      },
+      "end": "$",
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "match": ",",
+          "name": "punctuation.separator.delimiter.comma.dynamic.pgl1"
+        },
+        {
+          "include": "#integer"
+        },
+        {
+          "match": "\\*",
+          "name": "keyword.operator.star.match-fallback.pgl1"
+        },
+        {
+          "begin": ">",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.sections.angle-brackets.end.use.pgl1"
+            }
+          },
+          "end": "$",
+          "patterns": [
+            {
+              "include": "#comments"
+            },
+            {
+              "match": "\\b(alias)\\s+([_A-Za-z][_A-Za-z0-9]*)",
+              "captures": {
+                "1": {
+                  "name": "keyword.other.alias.pgl1"
+                },
+                "2": {
+                  "name": "variable.other.enummember.pgl1",
+                  "patterns": [
+                    {
+                      "include": "#reservedWords"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "begin": "\\b(struct)\\s+([_A-Za-z][_A-Za-z0-9]*)\\b",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.type.struct.pgl1"
+        },
+        "2": {
+          "name": "entity.name.type.struct.pgl1",
+          "patterns": [
+            {
+              "include": "#reservedWords"
+            }
+          ]
+        }
+      },
+      "end": "(?<=\\})",
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "begin": "\\{",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.section.block.begin.bracket.curly.struct.pgl1"
+            }
+          },
+          "end": "\\}",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.block.end.bracket.curly.struct.pgl1"
+            }
+          },
+          "name": "meta.block.struct.pgl1",
+          "patterns": [
+            {
+              "include": "#comments"
+            },
+            {
+              "include": "#structField"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "match": "^/\\* =(\\s*.*?)\\s*= \\*/$\\n?",
+          "captures": {
+            "1": {
+              "name": "meta.toc-list.banner.block.pgl1"
+            }
+          },
+          "name": "comment.block.pgl1"
+        },
+        {
+          "begin": "/\\*\\*",
+          "captures": {
+            "0": {
+              "name": "punctuation.definition.comment.pgl1"
+            }
+          },
+          "end": "\\*/",
+          "name": "comment.block.documentation.pgl1"
+        },
+        {
+          "begin": "/\\*",
+          "captures": {
+            "0": {
+              "name": "punctuation.definition.comment.pgl1"
+            }
+          },
+          "end": "\\*/",
+          "name": "comment.block.pgl1"
+        },
+        {
+          "match": "\\*/.*$",
+          "name": "invalid.illegal.stray-comment-end.pgl1"
+        },
+        {
+          "match": "^// =(\\s*.*?)\\s*=\\s*$",
+          "captures": {
+            "1": {
+              "name": "meta.toc-list.banner.line.pgl1"
+            }
+          },
+          "name": "comment.line.banner.pgl1"
+        },
+        {
+          "begin": "//",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.c"
+            }
+          },
+          "end": "$",
+          "name": "comment.line.double-slash.pgl1",
+          "patterns": [
+            {
+              "match": "(?>\\\\\\s*\\n)",
+              "name": "punctuation.separator.continuation.pgl1"
+            }
+          ]
+        }
+      ]
+    },
+    "literal": {
+      "patterns": [
+        {
+          "include": "#bool"
+        },
+        {
+          "include": "#char"
+        },
+        {
+          "include": "#string"
+        },
+        {
+          "include": "#float"
+        },
+        {
+          "include": "#integer"
+        }
+      ]
+    },
+    "bool": {
+      "match": "\\b(?:(true)|(false))\\b",
+      "captures": {
+        "1": {
+          "name": "constant.language.true.pgl1"
+        },
+        "2": {
+          "name": "constant.language.false.pgl1"
+        }
+      }
+    },
+    "float": {
+      "match": "([\\+\\-])?(?=\\d+[\\.eEfF]|\\.\\d)(\\b\\d+)?(\\.\\d*)?([eE][-+]?\\d+)?([fF]\\b)?",
+      "captures": {
+        "1": {
+          "name": "keyword.operator.pgl1"
+        }
+      },
+      "name": "constant.numeric.float.pgl1"
+    },
+    "integer": {
+      "match": "([\\+\\-])?\\b(?:(0[xX][0-9a-fA-F]+[uU]?)|(\\d+))",
+      "captures": {
+        "1": {
+          "name": "keyword.operator.pgl1"
+        },
+        "2": {
+          "name": "constant.numeric.hexadecimal.pgl1"
+        },
+        "3": {
+          "name": "constant.numeric.decimal.pgl1"
+        }
+      }
+    },
+    "char": {
+      "begin": "'",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.pgl1"
+        }
+      },
+      "end": "'",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.pgl1"
+        }
+      },
+      "name": "string.quoted.single.pgl1",
+      "patterns": [
+        {
+          "include": "#string_escape"
+        }
+      ]
+    },
+    "string": {
+      "begin": "\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.pgl1"
+        }
+      },
+      "end": "\"",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.pgl1"
+        }
+      },
+      "name": "string.quoted.double.pgl1",
+      "patterns": [
+        {
+          "include": "#string_escape"
+        }
+      ]
+    },
+    "string_escape": {
+      "match": "\\\\(?:[0-7]{1,3}|x[\\da-fA-F]{1,2}|.)",
+      "name": "constant.character.escape.pgl1"
+    },
+    "rawTypeCodec": {
+      "match": "^\\s*(\\d+)\\s*(\\|)\\s*([_A-Za-z][_A-Za-z0-9]*)\\s*(\\|)\\s*([_A-Za-z][_A-Za-z0-9]*)\\b",
+      "captures": {
+        "1": {
+          "name": "constant.numeric.decimal.size.pgl1"
+        },
+        "2": {
+          "name": "punctuation.definition.pgl1"
+        },
+        "3": {
+          "name": "entity.name.function.codec.pgl1",
+          "patterns": [
+            {
+              "include": "#reservedWords"
+            }
+          ]
+        },
+        "4": {
+          "name": "punctuation.definition.pgl1"
+        },
+        "5": {
+          "patterns": [
+            {
+              "include": "#builtinTypes"
+            },
+            {
+              "include": "#customType"
+            }
+          ]
+        }
+      }
+    },
+    "typeTypeCodec": {
+      "match": "\\b([_A-Za-z][_A-Za-z0-9]*)\\s*(\\|)\\s*([_A-Za-z][_A-Za-z0-9]*)\\s*(\\|)\\s*([_A-Za-z][_A-Za-z0-9]*)\\b",
+      "captures": {
+        "1": {
+          "patterns": [
+            {
+              "include": "#builtinTypes"
+            },
+            {
+              "include": "#customType"
+            }
+          ]
+        },
+        "2": {
+          "name": "punctuation.definition.pgl1"
+        },
+        "3": {
+          "name": "entity.name.function.codec.pgl1",
+          "patterns": [
+            {
+              "include": "#reservedWords"
+            }
+          ]
+        },
+        "4": {
+          "name": "punctuation.definition.pgl1"
+        },
+        "5": {
+          "patterns": [
+            {
+              "include": "#builtinTypes"
+            },
+            {
+              "include": "#customType"
+            }
+          ]
+        }
+      }
+    },
+    "builtinTypes": {
+      "match": "\\b(bool|float32|float64|int8|int16|int32|int64|uint8|uint16|uint32|uint64|char8)\\b",
+      "name": "storage.type.built-in.primitive.pgl1"
+    },
+    "customType": {
+      "match": "[_A-Za-z][_A-Za-z0-9]*",
+      "name": "entity.name.type.pgl1",
+      "patterns": [
+        {
+          "include": "#reservedWords"
+        }
+      ]
+    },
+    "bitField": {
+      "begin": "(\\d+)\\s+(\\:)",
+      "beginCaptures": {
+        "1": {
+          "name": "constant.numeric.decimal.size.pgl1"
+        },
+        "2": {
+          "name": "keyword.operator.colon.field.pgl1"
+        }
+      },
+      "end": "$",
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "begin": "\\b([_A-Za-z][_A-Za-z0-9]*)\\s+([_A-Za-z][_A-Za-z0-9]*)\\b",
+          "beginCaptures": {
+            "1": {
+              "patterns": [
+                {
+                  "include": "#builtinTypes"
+                }
+              ]
+            },
+            "2": {
+              "name": "variable.other.poperty.pgl1",
+              "patterns": [
+                {
+                  "include": "#reservedWords"
+                }
+              ]
+            }
+          },
+          "end": "$",
+          "patterns": [
+            {
+              "include": "#comments"
+            },
+            {
+              "include": "#bitArray"
+            },
+            {
+              "begin": "=",
+              "beginCaptures": {
+                "0": {
+                  "name": "keyword.operator.assignment.initializer.pgl1"
+                }
+              },
+              "end": "$",
+              "patterns": [
+                {
+                  "include": "#comments"
+                },
+                {
+                  "include": "#literal"
+                },
+                {
+                  "include": "#reference"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "structField": {
+      "begin": "(?:(\\*)|(\\d+))",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.operator.auto-size.pgl1"
+        },
+        "2": {
+          "name": "constant.numeric.decimal.size.pgl1"
+        }
+      },
+      "end": "$",
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#condition"
+        },
+        {
+          "include": "#applyCodec"
+        },
+        {
+          "begin": "(\\:)",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.operator.colon.field.pgl1"
+            }
+          },
+          "end": "$",
+          "patterns": [
+            {
+              "include": "#comments"
+            },
+            {
+              "include": "#modifier"
+            },
+            {
+              "begin": "\\b(?:(skipToAlign|skipToSize)(\\()(.*)(\\))|(skip))",
+              "beginCaptures": {
+                "1": {
+                  "name": "support.function.core.pgl1"
+                },
+                "2": {
+                  "name": "punctuation.section.arguments.begin.bracket.round.function.call.pgl1"
+                },
+                "3": {
+                  "patterns": [
+                    {
+                      "include": "#integer"
+                    }
+                  ]
+                },
+                "4": {
+                  "name": "punctuation.section.arguments.end.bracket.round.function.call.pgl1"
+                },
+                "5": {
+                  "name": "support.function.core.pgl1"
+                }
+              },
+              "end": "$",
+              "patterns": [
+                {
+                  "include": "#comments"
+                }
+              ]
+            },
+            {
+              "begin": "\\b(bitfield)(?:\\s+([_A-Za-z][_A-Za-z0-9]*))?\\b",
+              "beginCaptures": {
+                "1": {
+                  "name": "storage.type.bitfield.pgl1"
+                },
+                "2": {
+                  "name": "entity.name.type.bitfield.pgl1",
+                  "patterns": [
+                    {
+                      "include": "#reservedWords"
+                    }
+                  ]
+                }
+              },
+              "end": "(?<=\\})",
+              "patterns": [
+                {
+                  "include": "#comments"
+                },
+                {
+                  "begin": "\\{",
+                  "beginCaptures": {
+                    "0": {
+                      "name": "punctuation.section.block.begin.bracket.curly.bitfield.pgl1"
+                    }
+                  },
+                  "end": "\\}",
+                  "endCaptures": {
+                    "0": {
+                      "name": "punctuation.section.block.end.bracket.curly.bitfield.pgl1"
+                    }
+                  },
+                  "name": "meta.block.bitfield.pgl1",
+                  "patterns": [
+                    {
+                      "include": "#comments"
+                    },
+                    {
+                      "include": "#bitField"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "begin": "\\b([_A-Za-z][_A-Za-z0-9]*)(?:(<)(.*)(>))?\\s+([_A-Za-z][_A-Za-z0-9]*)\\b",
+              "beginCaptures": {
+                "1": {
+                  "patterns": [
+                    {
+                      "include": "#builtinTypes"
+                    },
+                    {
+                      "include": "#customType"
+                    }
+                  ]
+                },
+                "2": {
+                  "name": "punctuation.sections.angle-brackets.start.dynamic.pgl1"
+                },
+                "3": {
+                  "name": "meta.dynamic.pgl1",
+                  "patterns": [
+                    {
+                      "match": ",",
+                      "name": "punctuation.separator.delimiter.comma.dynamic.pgl1"
+                    },
+                    {
+                      "include": "#reference"
+                    }
+                  ]
+                },
+                "4": {
+                  "name": "punctuation.sections.angle-brackets.end.dynamic.pgl1"
+                },
+                "5": {
+                  "name": "variable.other.poperty.pgl1",
+                  "patterns": [
+                    {
+                      "include": "#reservedWords"
+                    }
+                  ]
+                }
+              },
+              "end": "$",
+              "patterns": [
+                {
+                  "include": "#comments"
+                },
+                {
+                  "include": "#array"
+                },
+                {
+                  "begin": "=",
+                  "beginCaptures": {
+                    "0": {
+                      "name": "keyword.operator.assignment.initializer.pgl1"
+                    }
+                  },
+                  "end": "$",
+                  "patterns": [
+                    {
+                      "include": "#comments"
+                    },
+                    {
+                      "include": "#literal"
+                    },
+                    {
+                      "include": "#reference"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "condition": {
+      "begin": "(\\?)\\s*([_A-Za-z][_A-Za-z0-9]*)\\s*(\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.operator.questionmark.pgl1"
+        },
+        "2": {
+          "name": "entity.name.function.call.protl",
+          "patterns": [
+            {
+              "include": "#reservedWords"
+            }
+          ]
+        },
+        "3": {
+          "name": "punctuation.section.arguments.begin.bracket.round.function.call.pgl1"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.arguments.end.bracket.round.function.call.pgl1"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#literal"
+        },
+        {
+          "include": "#reference"
+        }
+      ]
+    },
+    "applyCodec": {
+      "match": "(\\|)\\s*([_A-Za-z][_A-Za-z0-9]*)",
+      "captures": {
+        "1": {
+          "name": "keyword.operator.pipe.codec.pgl1"
+        },
+        "2": {
+          "name": "entity.name.codec.pgl1",
+          "patterns": [
+            {
+              "include": "#reservedWords"
+            }
+          ]
+        }
+      }
+    },
+    "reference": {
+      "begin": "\\b([_A-Za-z][_A-Za-z0-9]*)\\b",
+      "beginCaptures": {
+        "1": {
+          "name": "variable.other.pgl1",
+          "patterns": [
+            {
+              "include": "#reservedWords"
+            }
+          ]
+        }
+      },
+      "end": "(?=.)",
+      "applyEndPatternLast": true,
+      "patterns": [
+        {
+          "include": "#array"
+        },
+        {
+          "match": "(\\.)([_A-Za-z][_A-Za-z0-9]*)\\b",
+          "captures": {
+            "1": {
+              "name": "punctuation.separator.member.pgl1"
+            },
+            "2": {
+              "name": "entity.name.property.pgl1",
+              "patterns": [
+                {
+                  "include": "#reservedWords"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "modifier": {
+      "match": "\\b(?:(private)|(endianness-(?:be|le)))\\b",
+      "captures": {
+        "1": {
+          "name": "storage.modifier.private.pgl1"
+        },
+        "2": {
+          "name": "storage.modifier.endianness.pgl1"
+        }
+      }
+    },
+    "bitArray": {
+      "begin": "\\[",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.begin.bracket.square.pgl1"
+        }
+      },
+      "end": "\\]",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.end.bracket.square.pgl1"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#integer"
+        }
+      ]
+    },
+    "array": {
+      "begin": "\\[",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.begin.bracket.square.pgl1"
+        }
+      },
+      "end": "\\]",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.end.bracket.square.pgl1"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#integer"
+        },
+        {
+          "include": "#reference"
+        }
+      ]
+    },
+    "reservedWords": {
+      "patterns": [
+        {
+          "match": "\\b(auto|const|int|short|unsigned|break|continue|else|for|long|signed|switch|void|case|default|goto|register|sizeof|typedef|volatile|char|do|extern|if|return|static|while)\\b",
+          "name": "invalid.illegal.c-reserved.pgl1",
+          "comment": "reserved words from C"
+        },
+        {
+          "match": "\\b(asm|dynamic_cast|namespace|reinterpret_cast|try|explicit|new|static_cast|typeid|catch|operator|template|typename|class|friend|this|using|const_cast|inline|throw|virtual|delete|mutable|protected|wchar_t)\\b",
+          "name": "invalid.illegal.cpp-reserved.pgl1",
+          "comment": "reserved words from C++"
+        },
+        {
+          "match": "\\b(abstract|arguments|boolean|break|byte|case|catch|char|class|const|continue|debugger|default|delete|do|else|eval|export|extends|final|finally|for|function|goto|if|implements|import|in|instanceof|int|interface|let|long|native|new|null|package|protected|return|short|static|super|switch|synchronized|this|throw|throws|transient|try|typeof|var|void|volatile|while|with|yield)\\b",
+          "name": "invalid.illegal.js-reserved.pgl1",
+          "comment": "reserved words from Javascript"
+        },
+        {
+          "match": "\\b(Array|Date|eval|Function|hasOwnProperty|Infinity|isFinite|isNaN|isPrototypeOf|Math|NaN|Number|Object|String|toString|undefined|valueOf)\\b",
+          "name": "invalid.illegal.js-globals.pgl1",
+          "comment": "fixed globals from Javascript"
+        },
+        {
+          "match": "\\b(abstract|continue|for|new|switch|assert|default|goto|package|synchronized|boolean|do|if|this|break|implements|protected|throw|byte|else|import|throws|case|instanceof|return|transient|catch|extends|int|short|try|char|final|interface|static|void|class|finally|long|strictfp|volatile|const|native|super|while)\\b",
+          "name": "invalid.illegal.java-reserved.pgl1",
+          "comment": "reserved words from Java"
+        },
+        {
+          "match": "\\b(ADDITIONAL_LOAD_PATHS|ARGF|ARGV|ActionController|ActionView|ActiveRecord|ArgumentError|Array|BasicSocket|Benchmark|Bignum|Binding|CGI|CGIMethods|CROSS_COMPILING|Class|ClassInheritableAttributes|Comparable|ConditionVariable|Config|Continuation|DRb|DRbIdConv|DRbObject|DRbUndumped|Data|Date|DateTime|Delegater|Delegator|Digest|Dir|ENV|EOFError|ERB|Enumerable|Errno|ExceptionClass|Fcntl|File|FileList|FileTask|FileTest|FileUtils|Fixnum|FloatDomainError|GC|Gem|GetoptLong|Hash|IO|IOError|IPSocket|IPsocket|IndexError|Inflector|Integer|Interrupt|Kernel|LN_SUPPORTED|LoadError|LocalJumpError|Logger|Marshal|MatchData|MatchingData|Math|Method|Module|Mutex|Mysql|MysqlError|MysqlField|MysqlRes|NIL|NameError|NilClass|NoMemoryError|NoMethodError|NoWrite|NotImplementedError|Numeric|OPT_TABLE|Object|ObjectSpace|Observable|Observer|PGError|PGconn|PGlarge|PGresult|PLATFORM|PStore|ParseDate|Precision|Proc|Process|Queue|RAKEVERSION|RELEASE_DATE|RUBY|RUBY_PLATFORM|RUBY_RELEASE_DATE|RUBY_VERSION|Rack|Rake|RakeApp|RakeFileUtils|Range|RangeError|Rational|Regexp|RegexpError|Request|RuntimeError|STDERR|STDIN|STDOUT|ScanError|ScriptError|SecurityError|Signal|SignalException|SimpleDelegater|SimpleDelegator|Singleton|SizedQueue|Socket|SocketError|StandardError|String|StringScanner|Symbol|SyntaxError|SystemCallError|SystemExit|SystemStackError|TCPServer|TCPSocket|TCPserver|TCPsocket|TOPLEVEL_BINDING|Task|Text|Thread|ThreadError|ThreadGroup|Time|TransactionClass|TypeError|UDPSocket|UDPsocket|UNIXServer|UNIXSocket|UNIXserver|UNIXsocket|UnboundMethod|Url|VERSION|Verbose|YAML|ZeroDivisionError)\\b",
+          "name": "invalid.illegal.ruby-reserved.pgl1",
+          "comment": "reserved words from Ruby & Rails"
+        },
+        {
+          "match": "\\b(abstract|as|base|break|byte|case|catch|char|checked|class|const|continue|decimal|default|delegate|do|else|event|explicit|extern|finally|fixed|for|foreach|goto|if|implicit|in|in|generic|modifier|int|interface|internal|is|lock|long|namespace|new|null|object|operator|out|out|(generic|modifier)|override|params|protected|readonly|ref|return|sbyte|sealed|short|sizeof|stackalloc|static|string|switch|this|throw|try|typeof|uint|ulong|unchecked|unsafe|ushort|using|virtual|void|volatile|while)\\b",
+          "name": "invalid.illegal.csharp-reserved.pgl1",
+          "comment": "reserved words from C#"
+        }
+      ]
+    }
+  }
+}

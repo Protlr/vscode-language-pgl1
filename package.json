@@ -1,0 +1,35 @@
+{
+    "name": "pgl1",
+    "displayName": "Protocol Definition Language (PGL1)",
+    "description": "Syntax support for the Protocol Definition Language (PGL1) used by Protlr (see protlr.com)",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.44.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "pgl1",
+                "aliases": [
+                    "Protlr PGL1",
+                    "pgl"
+                ],
+                "extensions": [
+                    ".pgl",
+                    ".pgl1"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "pgl1",
+                "scopeName": "source.pgl1",
+                "path": "./syntaxes/pgl1.tmLanguage.json"
+            }
+        ]
+    }
+}

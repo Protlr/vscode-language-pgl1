@@ -1,0 +1,31 @@
+endianness-le protocol TetrixProtocol
+
+@entry
+struct CommandFrame
+{
+    1 : int8 version = 1
+    * : Command<version> cmd
+}
+
+enum Color {
+	Red = 1
+	Blue
+}
+
+//! Handshake with server
+@use Command<0x1> alias HELLO
+struct Hello {}
+
+//! Send High Score to server
+@use Command<0x2> alias HIGH_SCORE
+struct Highscore
+{
+	8 : int64 score = 10
+	4 : private int32 nameLength
+	1 : char8 name[nameLength]
+	* : Color helloArray[10]
+	1 : bitfield {
+        2 : uint8 t = 2
+        1 : bool flag
+	}
+}
